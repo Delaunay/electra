@@ -1,12 +1,27 @@
+import { useState, useEffect } from "react"
+import {Link} from 'react-router-dom'
+
 const Home = () => {
+    const [recipes, setRecipes] = useState([])
+
+    useEffect(() => {
+        window.recipes.GetRecipes().then(
+            (result) => {
+                setRecipes(result)
+            },
+            (err) => {
+                console.log(err)
+            }
+        ) 
+    }, [])
+
+    console.log(recipes)
     return (
-        <div>
-            <p>
-            Here you can see all active service calls as a list and 
-            be able to filter service call by responsible, status, and 
-            category and search by Reference number and keyword.
-            </p>
-        </div>
+        <ul>
+            {recipes.map((recipe) => 
+                <li key={recipe.Id}><Link to={"/recipe/" + recipe.Name}>{recipe.Name}</Link></li>
+            )}
+        </ul>
     )
 }
 

@@ -12,7 +12,8 @@ import {
 
 import NavigationBar from './components/Navbar'
 import Home from './components/Home'
-import { SQLTable } from './components/Table'
+import { Recipe } from './components/Recipe'
+import { DatabaseExplorerSelectTable, DatabaseExplorerWithParam } from './components/Explorer'
 import Vega from './components/Vega'
 import VegaLite from './components/VegaLite'
 
@@ -39,8 +40,8 @@ const App = () => {
       path: "/"
     },
     {
-      name: "Table",
-      path: "/database/tables/branch"
+      name: "Explorer",
+      path: "/database"
     },
     {
       name: "VegaLite",
@@ -64,16 +65,20 @@ const App = () => {
 
 
   return (
-    <Router>
+    <Router>  
       <NavigationBar items={navbar}></NavigationBar>
       <div className="mt-5"></div>
-      <div className="container">
+      <div className="container-fluid">
+
         <Routes>
           <Route path='/' element={<Home />}></Route>
+          <Route path='/recipe/:recipe' element={<Recipe />}></Route>
           <Route path='/vega' element={<Vega />}></Route>
           <Route path='/VegaLite' element={<VegaLite />}></Route>
-          <Route path='/database/tables/:table' element={<SQLTable />}></Route>
-        </Routes>
+          <Route path='/database' element={<DatabaseExplorerSelectTable />}></Route>
+          <Route path='/database/tables/:table' element={<DatabaseExplorerWithParam />}></Route>
+        </Routes> 
+        
       </div>
     </Router>
   )

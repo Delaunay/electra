@@ -1,3 +1,5 @@
+import {useEffect, useState} from 'react'
+
 // import * as vega from "vega-lite";
 import embed from 'vega-embed';
 import { Table } from './Table'
@@ -18,7 +20,11 @@ const BarSpec = (x, y, values) => {
       }
 }
 
-const VegaLite = ({}) => {
+const VegaLite = (props) => {
+    const { isLoading, args } = props;
+    const [size, SetSize]= useState([1, 500])
+    const [GotSize, SetGotSize]= useState(false)
+
     let data = [
         {'a': 'A', 'b': 28},
         {'a': 'B', 'b': 55},
@@ -27,23 +33,49 @@ const VegaLite = ({}) => {
         {'a': 'E', 'b': 81},
         {'a': 'F', 'b': 53},
         {'a': 'G', 'b': 19},
-        {'a': 'H', 'b': 87},
+        {'a': 'H', 'b': 87}, 
         {'a': 'I', 'b': 52}
-    ]
+    ] 
+ 
     let spec = BarSpec('a', 'b', data);
+    spec['width'] = size[0]
+    spec['height'] = size[1]  
 
-    embed('#view', spec);
+    useEffect(() => {
+        // without the guard it keeps growing
+        if (!GotSize) {
+            var elem = document.getElementById('view'); 
+            var positionInfo = elem.getBoundingClientRect();
+            var height = positionInfo.height;  
+            var width = positionInfo.width;
+   
+            SetSize([Math.max(width, size[0]), Math.max(height, size[1])])  
+            SetGotSize(true)
+            console.log(positionInfo)  
+        }
+        }, 
+        []
+    )
+  
+    embed('#view', spec);  
 
     return (
         <div>
             <div className="row">
-                <div className="col"></div>
-                <div className="col" id="view"></div>
-            </div>
-            <div className="row">
-                <div className="col"></div>
                 <div className="col">
-                    <Table rows={data.slice(0, 10)}></Table>
+                    <pre></pre>
+                </div>
+                
+                <div className="col">
+                    <div className="row">
+                        <div className="col" id="view"></div>
+                    </div>
+                    <div className="row">
+                        <div className="col"> 
+                            <h4>Values (head=5)</h4>
+                            <Table rows={data.slice(0, 5)}></Table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
